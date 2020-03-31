@@ -47,14 +47,13 @@ class TeXView extends StatefulWidget {
 }
 
 class _TeXViewState extends State<TeXView> {
-  String teXViewId = 'tex_view';
-
   @override
   Widget build(BuildContext context) {
     return Container(
       height: widget.height ?? 300,
       child: HtmlElementView(
-        viewType: teXViewId,
+        key: UniqueKey(),
+        viewType: widget.teXHTML,
       ),
     );
   }
@@ -64,14 +63,23 @@ class _TeXViewState extends State<TeXView> {
     String renderEngine =
         widget.renderingEngine == RenderingEngine.MathJax ? "mathjax" : "katex";
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(
-        teXViewId,
-        (int viewId) => IFrameElement()
-          ..width = MediaQuery.of(context).size.width.toString() //'800'
-          ..height = MediaQuery.of(context).size.height.toString() //'400'
-          ..src =
-              "packages/flutter_tex/$renderEngine/index.html?teXHTML=${Uri.encodeComponent(widget.teXHTML)}"
-          ..style.border = 'none');
+    ui.platformViewRegistry.registerViewFactory(widget.teXHTML, (int viewId) {
+      return IFrameElement()
+        ..width = context != null
+            ? MediaQuery.of(context).size.width.toString()
+            : '800' //'800'
+        ..height = context != null
+            ? MediaQuery.of(context).size.height.toString()
+            : '400' //'400'
+        ..src =
+            "packages/flutter_tex/$renderEngine/index.html?teXHTML=${Uri.encodeComponent(widget.teXHTML)}"
+        ..style.border = 'none';
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
