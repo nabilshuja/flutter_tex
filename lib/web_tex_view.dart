@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:universal_html/html.dart';
@@ -71,8 +72,9 @@ class _TeXViewState extends State<TeXView> {
         ..height = context != null
             ? MediaQuery.of(context).size.height.toString()
             : '400' //'400'
-        ..src =
-            "packages/flutter_tex/$renderEngine/index.html?teXHTML=${Uri.encodeComponent(widget.teXHTML)}"
+        ..src = kReleaseMode
+            ? "assets/packages/flutter_tex/$renderEngine/index.html?teXHTML=${Uri.encodeComponent(widget.teXHTML)}"
+            : "packages/flutter_tex/$renderEngine/index.html?teXHTML=${Uri.encodeComponent(widget.teXHTML)}"
         ..style.border = 'none';
     });
     super.initState();
